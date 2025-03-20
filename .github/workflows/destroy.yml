@@ -1,0 +1,62 @@
+name: Détruire l'infrastructure sur AWS
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+    destroy:
+        runs-on: ubuntu-latest
+    
+        steps:
+        # Récup le code terraform sur main
+        - name: Copie du code terraform
+          uses: actions/checkout@v2
+          with:
+            ref: main
+    
+        # Récup le `tfstate` sur la branche state dans le dossier tfstate/
+        - name: Récupération du tfstate
+          uses: actions/checkout@v2
+          with:
+            ref: state
+            path: tfstate
+
+        # Déplacer terraform.tfstate vers la racine
+        - name: Déplacer terraform.tfstate vers la racine
+          run: mv tfstate/terraform.tfstate .
+
+        # Génération du fichier zip de lambda
+        - name: Zip de la Lambda
+          run: zip ./lambda.zip ./hour_name.js
+
+        # Configuration de l'environnement AWS
+        - name: Configuration de l'environnement AWS
+          run: |
+            aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws configure set default.region eu-west-3
+
+        # Installation de Terraform
+        - name: Installation de Terraform
+          uses: hashicorp/setup-terraform@v1
+          with:
+            terraform_version: '1.0.0'
+
+        # Terraform init
+        - name: Terraform init
+          run: terraform init
+
+        # Terraform destroy
+        - name: Terraform destroy
+          run: terraform destroy -auto-approve
+        
+        # Sauvegarde du tfstate mis à jour dans la branche state
+        - name: Sauvegarder le tfstate dans la branche state
+          run: |
+            cp terraform.tfstate tfstate/terraform.tfstate
+            cd tfstate
+            git config user.name "github-actions"
+            git config user.email "actions@github.com"
+            git add terraform.tfstate
+            git commit -m "UPDATE: Terraform state"
+            git push origin state
