@@ -1,0 +1,40 @@
+name: Déploiement sur AWS
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Récup le code terraform sur main
+      - name: Copie du code terraform
+        uses: actions/checkout@v2
+        with:
+          ref: main
+
+      # Récup le `tfstate` sur la branche state dans le dossier tfstate/
+      - name: Récupération du tfstate
+        uses: actions/checkout@v2
+        with:
+          ref: state
+          path: tfstate
+
+      # Configuration de l'environnement AWS
+      - name: Configuration de l'environnement AWS
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set default.region ${{ secrets.AWS_REGION }}
+
+      # Si un `tfstate` n'existe pas, on peut faire `terraform init`
+      # - name: Initialisation de Terraform
+      #   run: 
+
+      # Terraform plan
+
+      # Terraform apply
