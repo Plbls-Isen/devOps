@@ -48,4 +48,4 @@ jobs:
 
       # Terraform apply
       - name: Terraform apply
-        run: terraform apply tfplan
+        run: terraform apply tfplan -auto-approve
