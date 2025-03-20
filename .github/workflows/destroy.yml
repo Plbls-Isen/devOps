@@ -25,9 +25,6 @@ jobs:
         - name: Déplacer terraform.tfstate vers la racine
           run: mv tfstate/terraform.tfstate .
 
-        - name: Console ls
-          run: ls -a
-
         # Génération du fichier zip de lambda
         - name: Zip de la Lambda
           run: |

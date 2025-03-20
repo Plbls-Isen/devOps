@@ -24,6 +24,10 @@ jobs:
           ref: state
           path: tfstate
 
+      # Déplacer terraform.tfstate vers la racine
+      - name: Déplacer terraform.tfstate vers la racine
+        run: mv tfstate/terraform.tfstate .
+
       # Génération du fichier zip de lambda
       - name: Zip de la Lambda
         run: |
