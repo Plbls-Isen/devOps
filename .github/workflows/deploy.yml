@@ -39,7 +39,6 @@ jobs:
 
       # Si un `tfstate` n'existe pas, on peut faire `terraform init`
       - name: Terraform init si besoin
-        working-directory: terraform
         run: |
           if [ ! -d "tfstate" ]; then
             terraform init
@@ -47,12 +46,10 @@ jobs:
 
       # Terraform plan
       - name: Terraform plan
-        working-directory: terraform
         run: |
           terraform plan -out=tfplan
 
       # Terraform apply
       - name: Terraform apply
-        working-directory: terraform
         run: |
           terraform apply tfplan
