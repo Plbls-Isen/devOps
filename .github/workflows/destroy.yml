@@ -21,6 +21,9 @@ jobs:
             ref: state
             path: tfstate
 
+        - name: Console ls
+          run: ls -a
+
         # Génération du fichier zip de lambda
         - name: Zip de la Lambda
           run: |
