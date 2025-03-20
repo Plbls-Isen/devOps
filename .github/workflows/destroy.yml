@@ -21,6 +21,10 @@ jobs:
             ref: state
             path: tfstate
 
+        # Déplacer terraform.tfstate vers la racine
+        - name: Déplacer terraform.tfstate vers la racine
+          run: mv tfstate/terraform.tfstate .
+
         - name: Console ls
           run: ls -a
 

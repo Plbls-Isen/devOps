@@ -63,7 +63,7 @@ jobs:
       # Récupération et affichage de l'URL de l'API depuis Terraform output
       - name: Affichage de l'URL de l'API
         run: |
-         API_URL=$(terraform output -raw lambda_url)
+         API_URL=$(terraform output -raw api_url)
          echo "API URL: $API_URL"
 
       # Sauvegarde du tfstate mis à jour dans la branche state
