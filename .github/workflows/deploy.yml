@@ -24,6 +24,18 @@ jobs:
           ref: state
           path: tfstate
 
+      # Génération du fichier zip de lambda
+      - name: Zip de la Lambda
+        working-directory: lambda
+        run: |
+          if [ -d "lambda" ]; then
+              npm install
+              zip -r ../lambda.zip .
+          else
+              echo "Le dossier lambda n'existe pas"
+              exit 1
+          fi
+
       # Configuration de l'environnement AWS
       - name: Configuration de l'environnement AWS
         run: |
@@ -38,7 +50,7 @@ jobs:
           terraform_version: '1.0.0'
 
       # Terraform init
-      - name: Terraform init si besoin
+      - name: Terraform init
         run: terraform init
     
 
