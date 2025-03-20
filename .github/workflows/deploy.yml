@@ -39,5 +39,11 @@ jobs:
           fi
 
       # Terraform plan
+      - name: Terraform plan
+        run: |
+          terraform plan -out=tfplan
 
       # Terraform apply
+      - name: Terraform apply
+        run: |
+          terraform apply tfplan
