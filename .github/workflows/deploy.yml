@@ -48,7 +48,7 @@ jobs:
 
       # Terraform apply
       - name: Terraform apply
-        run: terraform apply tfplan -auto-approve
+        run: terraform apply tfplan
 
       # Sauvegarde du tfstate mis à jour dans la branche state
       - name: Sauvegarder le tfstate dans la branche state
