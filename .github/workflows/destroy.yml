@@ -1,0 +1,22 @@
+name: Détruire l'infrastructure sur AWS
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+    destroy:
+        runs-on: ubuntu-latest
+    
+        steps:
+        # Récup le code terraform sur main
+        - name: Copie du code terraform
+          uses: actions/checkout@v2
+          with:
+            ref: main
+    
+        # Récup le `tfstate` sur la branche state dans le dossier tfstate/
+        - name: Récupération du tfstate
+          uses: actions/checkout@v2
+          with:
+            ref: state
+            path: tfstate
