@@ -49,3 +49,14 @@ jobs:
       # Terraform apply
       - name: Terraform apply
         run: terraform apply tfplan -auto-approve
+
+      # Sauvegarde du tfstate mis à jour dans la branche state
+      - name: Sauvegarder le tfstate dans la branche state
+        run: |
+          cp terraform.tfstate tfstate/terraform.tfstate
+          cd tfstate
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add terraform.tfstate
+          git commit -m "UPDATE: Terraform state"
+          git push origin state
