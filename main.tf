@@ -45,13 +45,19 @@ resource "aws_iam_role" "iam_for_lambda" {
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
+data "archive_file" "lambda_zip" {
+  type        = "zip"
+  source_file = "hour_name.js"
+  output_path = "${path.module}/lambda.zip"
+}
+
 resource "aws_lambda_function" "hour_name" {
-  filename         = "lambda.zip"
+  filename         = data.archive_file.lambda_zip.output_path
   function_name    = "hour_name_g11"
   role             = aws_iam_role.iam_for_lambda.arn
   handler = "hour_name.handler"
   runtime          = "nodejs18.x"
-  source_code_hash = filebase64sha256("lambda.zip")
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
 }
 
 resource "aws_lambda_function_url" "lambda_url" {
@@ -106,10 +112,17 @@ resource "aws_lambda_permission" "apigw" {
 resource "aws_api_gateway_deployment" "lambda_deployment" {
   depends_on  = [aws_api_gateway_integration.lambda_integration]
   rest_api_id = aws_api_gateway_rest_api.lambda_api.id
-  stage_name  = "prod"
+  description = "Deployment for Lambda API"
+}
+
+resource "aws_api_gateway_stage" "prod" {
+  rest_api_id    = aws_api_gateway_rest_api.lambda_api.id
+  deployment_id  = aws_api_gateway_deployment.lambda_deployment.id
+  stage_name     = "prod"
+  description    = "Production stage"
 }
 
 output "api_url" {
   description = "L'URL pour accéder à l'API Gateway"
-  value       = "${aws_api_gateway_deployment.lambda_deployment.invoke_url}/hello"
+  value       = "${aws_api_gateway_stage.prod.invoke_url}/hello"
 }
