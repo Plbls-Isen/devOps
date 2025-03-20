@@ -23,11 +23,9 @@ jobs:
 
         # Génération du fichier zip de lambda
         - name: Zip de la Lambda
-          working-directory: lambda
           run: |
             if [ -d "lambda" ]; then
-                npm install
-                zip -r ../lambda.zip .
+                zip -r ./lambda.zip ./lambda
             else
                 echo "Le dossier lambda n'existe pas"
                 exit 1
