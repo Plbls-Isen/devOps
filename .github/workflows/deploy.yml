@@ -31,8 +31,15 @@ jobs:
           aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws configure set default.region ${{ secrets.AWS_REGION }}
 
+      # Installation de Terraform
+      - name: Installation de Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: '1.0.0'
+
       # Si un `tfstate` n'existe pas, on peut faire `terraform init`
-      - name: Initialisation de Terraform
+      - name: Terraform init si besoin
+        working-directory: terraform
         run: |
           if [ ! -d "tfstate" ]; then
             terraform init
@@ -40,10 +47,12 @@ jobs:
 
       # Terraform plan
       - name: Terraform plan
+        working-directory: terraform
         run: |
           terraform plan -out=tfplan
 
       # Terraform apply
       - name: Terraform apply
+        working-directory: terraform
         run: |
           terraform apply tfplan
