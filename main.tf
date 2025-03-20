@@ -27,10 +27,6 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
-
-
-
-
 data "aws_iam_policy_document" "assume_role" {
   statement {
     effect = "Allow"
@@ -67,3 +63,4 @@ output "lambda_url" {
   description = "L'URL pour accéder à la fonction Lambda"
   value       = aws_lambda_function_url.lambda_url.function_url
 }
+
